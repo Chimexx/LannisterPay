@@ -1,0 +1,58 @@
+[
+  {
+    "id": "LNPY1221",
+    "currency": "NGN",
+    "locale": "*",
+    "feeEntity": "*",
+    "entityProperty": "*",
+    "feeType": "PERC",
+    "feeValue": {
+      "perc": 1.4
+    }
+  },
+  {
+    "id": "LNPY1222",
+    "currency": "NGN",
+    "locale": "INTL",
+    "feeEntity": "CREDIT-CARD",
+    "entityProperty": "VISA",
+    "feeType": "PERC",
+    "feeValue": {
+      "perc": 5
+    }
+  },
+  {
+    "id": "LNPY1223",
+    "currency": "NGN",
+    "locale": "LOCL",
+    "feeEntity": "CREDIT-CARD",
+    "entityProperty": "*",
+    "feeType": "FLAT_PERC",
+    "feeValue": {
+      "flat": 50,
+      "perc": 1.4
+    }
+  },
+  {
+    "id": "LNPY1224",
+    "currency": "NGN",
+    "locale": "*",
+    "feeEntity": "BANK-ACCOUNT",
+    "entityProperty": "*",
+    "feeType": "FLAT",
+    "feeValue": {
+      "flat": 100
+    }
+  },
+  {
+    "id": "LNPY1225",
+    "currency": "NGN",
+    "locale": "*",
+    "feeEntity": "USSD",
+    "entityProperty": "MTN",
+    "feeType": "PERC",
+    "feeValue": {
+      "perc": 0.55
+    }
+  }
+]
