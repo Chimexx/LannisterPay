@@ -16,7 +16,6 @@ router.post("/", (req, res) => {
 			feeEntity: tempConfig[i].split(" ")[3].split("(")[0],
 			entityProperty: regExp.exec(tempConfig[i].split(" ")[3])[1],
 			feeType: tempConfig[i].split(" ")[6],
-
 			feeValue:
 				tempConfig[i].split(" ")[6] === "FLAT"
 					? { flat: parseFloat(tempConfig[i].split(" ")[7]) }

@@ -1,95 +1,66 @@
 const router = require("express").Router();
 ("use strict");
 const fs = require("fs");
+const { verifyPayload } = require("./validation");
+const { calc } = require("./utils");
 
 //Transactions
-router.post("/", async (req, res) => {
+router.post("/", verifyPayload, async (req, res) => {
 	//fetch and parse config file
 	let data = fs.readFileSync("FeeConfigurationSpec.json");
 	let configs = await JSON.parse(data);
 
-	const { Issuer, Brand, Type, Country } = req.body.PaymentEntity;
-	const { Currency } = req.body;
+	const ids = [];
+	configs.forEach((config, index) => ids.push({ index: config.id }));
+
+	console.log("ids:", ids);
+	const {
+		PaymentEntity: { Issuer, Brand, Type, Country },
+	} = req.body;
 
 	//set the locale of the request data
 	const locale = req.body.CurrencyCountry === Country ? "LOCL" : "INTL";
-	console.log(locale);
 
-	const { Amount } = req.body;
-	const { BearsFee } = req.body.Customer;
-
-	const calc = (id) => {
-		const config = configs.filter((config) => config.id === id)[0];
-		let AppliedFeeValue;
-		if (!BearsFee) {
-			AppliedFeeValue = 0;
-		} else {
-			if (config.feeType === "FLAT_PERC") {
-				AppliedFeeValue = config.feeValue.flat + (config.feeValue.perc / 100) * Amount;
-			} else if (config.feeType === "FLAT") {
-				AppliedFeeValue = config.feeValue.flat;
-			} else {
-				AppliedFeeValue = (config.feeValue.perc / 100) * Amount;
-			}
-		}
-		return {
-			AppliedFeeID: id,
-			AppliedFeeValue: parseFloat(AppliedFeeValue.toFixed(1)),
-			ChargeAmount: Amount + AppliedFeeValue,
-			SettlementAmount: Amount,
-		};
-	};
 	try {
-		//Check for supported currency
-		if (Currency === "NGN") {
-			//if credit-card transaction
-			if (Type === "CREDIT-CARD" || Type === "DEBIT-CARD") {
-				if (Brand) {
-					if (locale === "LOCL") {
-						return res.status(200).json(calc("LNPY1223"));
-					} else if (locale === "INTL") {
-						return res.status(200).json(calc("LNPY1222"));
-					}
-				} else {
-					if (locale === "LOCL" || locale === "INTL") {
-						return res.status(200).json(calc("LNPY1223"));
-					} else {
-						return res.status(200).json(calc("LNPY1221"));
-					}
-				}
-
-				//if ussd transaction
-			} else if (Type === "USSD") {
-				const prop = configs.filter((config) => config.feeEntity === "USSD")[0];
-				if (Issuer && Issuer === prop.entityProperty) {
-					return res.status(200).json(calc("LNPY1225"));
-				} else {
-					return res.status(200).json(calc("LNPY1221"));
-				}
-				//if wallet transaction
-			} else if (Type === "WALLET-ID") {
-				return res.status(200).json(calc("LNPY1221"));
-
-				//if bank transaction
-			} else if (Type === "BANK-ACCOUNT") {
-				if (Issuer) {
-					return res.status(200).json(calc("LNPY1224"));
-				} else {
-					return res.status(200).json(calc("LNPY1221"));
+		//if credit-card transaction
+		if (Type === "CREDIT-CARD" || Type === "DEBIT-CARD") {
+			if (Brand) {
+				if (locale === "LOCL") {
+					return res.status(200).json(await calc("LNPY1223", req));
+				} else if (locale === "INTL") {
+					return res.status(200).json(await calc("LNPY1222", req));
 				}
 			} else {
-				return res.status(200).json(calc("LNPY1221"));
+				if (locale === "LOCL" || locale === "INTL") {
+					return res.status(200).json(await calc("LNPY1223", req));
+				} else {
+					return res.status(200).json(await calc("LNPY1221", req));
+				}
 			}
 
-			//if unsupported or no currency
+			//if ussd transaction
+		} else if (Type === "USSD") {
+			const prop = configs.filter((config) => config.feeEntity === "USSD")[0];
+			if (Issuer && Issuer === prop.entityProperty) {
+				return res.status(200).json(await calc("LNPY1225", req));
+			} else {
+				return res.status(200).json(await calc("LNPY1221", req));
+			}
+
+			//if wallet transaction
+		} else if (Type === "WALLET-ID") {
+			return res.status(200).json(await calc("LNPY1221", req));
+
+			//if bank transaction
+		} else if (Type === "BANK-ACCOUNT") {
+			if (Issuer) {
+				return res.status(200).json(await calc("LNPY1224", req));
+			} else {
+				return res.status(200).json(await calc("LNPY1221", req));
+			}
 		} else {
-			return res
-				.status(400)
-				.json(
-					Currency ? `No fee configurations for ${Currency} transactions` : "Currency is unknown"
-				);
+			return res.status(200).json(await calc("LNPY1221", req));
 		}
-		// res.status(200).json("ok");
 	} catch (error) {
 		res.status(500).json(error);
 		console.log(error);

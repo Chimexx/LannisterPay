@@ -8,7 +8,8 @@
     "feeType": "PERC",
     "feeValue": {
       "perc": 1.4
-    }
+    },
+    "priority": 2
   },
   {
     "id": "LNPY1222",
@@ -19,7 +20,8 @@
     "feeType": "PERC",
     "feeValue": {
       "perc": 5
-    }
+    },
+    "priority": 3
   },
   {
     "id": "LNPY1223",
@@ -31,7 +33,8 @@
     "feeValue": {
       "flat": 50,
       "perc": 1.4
-    }
+    },
+    "priority": 2
   },
   {
     "id": "LNPY1224",
@@ -42,7 +45,8 @@
     "feeType": "FLAT",
     "feeValue": {
       "flat": 100
-    }
+    },
+    "priority": 2
   },
   {
     "id": "LNPY1225",
@@ -53,6 +57,7 @@
     "feeType": "PERC",
     "feeValue": {
       "perc": 0.55
-    }
+    },
+    "priority": 2
   }
 ]
