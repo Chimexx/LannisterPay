@@ -10,21 +10,21 @@ router.post("/", (req, res) => {
 
 	for (let i = 0; i < tempConfig.length; i++) {
 		config.push({
-			id: tempConfig[i].split(" ")[0],
-			currency: tempConfig[i].split(" ")[1],
-			locale: tempConfig[i].split(" ")[2],
-			feeEntity: tempConfig[i].split(" ")[3].split("(")[0],
-			entityProperty: regExp.exec(tempConfig[i].split(" ")[3])[1],
-			feeType: tempConfig[i].split(" ")[6],
+			id: tempConfig[i].split(" ")[0].trim(),
+			currency: tempConfig[i].split(" ")[1].trim(),
+			locale: tempConfig[i].split(" ")[2].trim(),
+			feeEntity: tempConfig[i].split(" ")[3].split("(")[0].trim(),
+			entityProperty: regExp.exec(tempConfig[i].split(" ")[3])[1].trim(),
+			feeType: tempConfig[i].split(" ")[6].trim(),
 			feeValue:
-				tempConfig[i].split(" ")[6] === "FLAT"
-					? { flat: parseFloat(tempConfig[i].split(" ")[7]) }
-					: tempConfig[i].split(" ")[6] === "FLAT_PERC"
+				tempConfig[i].split(" ")[6].trim() === "FLAT"
+					? { flat: parseFloat(tempConfig[i].split(" ")[7].trim()) }
+					: tempConfig[i].split(" ")[6].trim() === "FLAT_PERC"
 					? {
-							flat: parseFloat(tempConfig[i].split(" ")[7].split(":")[0]),
-							perc: parseFloat(tempConfig[i].split(" ")[7].split(":")[1]),
+							flat: parseFloat(tempConfig[i].split(" ")[7].split(":")[0].trim()),
+							perc: parseFloat(tempConfig[i].split(" ")[7].split(":")[1].trim()),
 					  }
-					: { perc: parseFloat(tempConfig[i].split(" ")[7]) },
+					: { perc: parseFloat(tempConfig[i].split(" ")[7].trim()) },
 		});
 	}
 
